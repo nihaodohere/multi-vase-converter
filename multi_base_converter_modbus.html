@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="进制转换">
+<title>多进制转换器 · Modbus 调试工具</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121d30;--panel2:#19263b;--text:#f3f6fc;--muted:#9eacc2;--line:#2b3a52;--accent:#73a7ff;--good:#68d6a0;--bad:#ff8b8b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#14233a 0%,var(--bg) 42%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 16px calc(24px + env(safe-area-inset-bottom))}
+main{max-width:560px;margin:0 auto;padding-top:18px}.brand{display:flex;align-items:center;gap:12px;margin:8px 0 22px}.logo{width:48px;height:48px;border-radius:15px;background:#244a7b;display:grid;place-items:center;font-size:25px;box-shadow:0 8px 24px #0004}.brand h1{font-size:22px;margin:0 0 4px}.brand p{margin:0;color:var(--muted);font-size:13px}
+.card{background:rgba(18,29,48,.94);border:1px solid var(--line);border-radius:20px;padding:17px;margin:13px 0;box-shadow:0 10px 32px #0002}
+label,.section-title{display:block;font-size:14px;font-weight:650;margin-bottom:9px}.row{display:flex;gap:9px;align-items:center}.row>*{min-width:0}.row select{flex:1}select,input{width:100%;border:1px solid #3a4b65;border-radius:12px;background:var(--panel2);color:var(--text);font-size:16px;padding:13px;outline:none}input{font-size:20px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}input:focus,select:focus{border-color:var(--accent)}.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 15px}.quick button{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:10px 2px;border-radius:11px;font-size:12px}.quick button.active{background:#244a7b;border-color:#73a7ff;color:white}.hint{font-size:12px;color:var(--muted);margin:9px 0 0}.status{font-size:12px;margin-top:8px;min-height:16px}.status.ok{color:var(--good)}.status.err{color:var(--bad)}.result{padding:12px 0;border-bottom:1px solid var(--line)}.result:last-child{border-bottom:0;padding-bottom:0}.result-head{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:7px}.result-value{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;line-height:1.5;overflow-wrap:anywhere;word-break:break-word}.copy{border:1px solid var(--line);background:#20324d;color:#e8f0ff;border-radius:9px;padding:7px 10px;font-size:12px}.custom-value{font-size:23px;font-weight:700;overflow-wrap:anywhere;word-break:break-word}.toggle{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;margin-top:12px}.toggle input{width:18px;height:18px;accent-color:var(--accent)}.footer{text-align:center;color:#7f90aa;font-size:11px;padding:8px 0 20px}.clear{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:transparent;color:var(--muted);font-size:14px;margin-top:12px}
+.navtabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:16px 0}.navtabs button{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:12px 8px;border-radius:12px;font-size:14px}.navtabs button.active{background:#244a7b;border-color:var(--accent);color:#fff}.toolpane[hidden]{display:none}.field{margin:12px 0}.field label{margin-bottom:8px}.hexarea{width:100%;min-height:94px;resize:vertical;border:1px solid #3a4b65;border-radius:12px;background:var(--panel2);color:var(--text);font:15px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;padding:12px;outline:none}.hexarea:focus{border-color:var(--accent)}.action{border:1px solid #45658e;background:#244a7b;color:white;border-radius:11px;padding:11px 13px;font-size:14px}.action.secondary{background:var(--panel2);border-color:var(--line);color:var(--text)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.msg{border-radius:11px;padding:11px 12px;background:#1b2b42;color:var(--muted);font-size:13px;line-height:1.5;overflow-wrap:anywhere}.msg.ok{border:1px solid #28684e;color:#9be4bd;background:#102c27}.msg.err{border:1px solid #85464a;color:#ffb4b4;background:#351c25}.kv{display:grid;grid-template-columns:minmax(100px, .8fr) minmax(0,1.2fr);gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.kv:last-child{border-bottom:0}.kv span:first-child{color:var(--muted)}.kv span:last-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}.smallnote{color:var(--muted);font-size:12px;line-height:1.55;margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+  <header class="brand"><div class="logo">⑯</div><div><h1>多进制转换器</h1><p>2～36 进制 · 实时转换 · 一键复制</p></div></header>
+  <div class="navtabs" role="tablist" aria-label="工具选择"><button class="active" data-tab="converter" role="tab" aria-selected="true">多进制转换</button><button data-tab="modbus" role="tab" aria-selected="false">Modbus 调试</button></div>
+  <div id="converterPane" class="toolpane">
+  <section class="card">
+    <label for="base">输入进制</label>
+    <div class="quick" id="quick">
+      <button data-base="2">二进制 · 2</button><button data-base="8">八进制 · 8</button><button data-base="10">十进制 · 10</button><button data-base="16" class="active">十六进制 · 16</button>
+    </div>
+    <div class="row"><select id="base" aria-label="输入进制"></select></div>
+    <label for="value" style="margin-top:17px">输入数值</label>
+    <input id="value" value="FF" placeholder="例如 FF、1010、255" autocapitalize="characters" autocomplete="off" spellcheck="false">
+    <div id="status" class="status ok">输入有效，已自动完成转换</div>
+    <label class="toggle"><input id="prefix" type="checkbox"> 显示进制前缀（0x、0b、0o）</label>
+  </section>
+  <section class="card">
+    <div class="section-title">常用进制转换结果</div>
+    <div id="results"></div>
+  </section>
+  <section class="card">
+    <div class="section-title">自定义输出进制</div>
+    <label for="outBase">目标进制</label><select id="outBase"></select>
+    <div class="result" style="padding-top:15px">
+      <div class="result-head"><span id="customLabel">转换结果（10 进制）</span><button class="copy" data-copy="custom">复制结果</button></div>
+      <div class="custom-value" id="customValue">255</div>
+    </div>
+  </section>
+  <button class="clear" id="clear">清空并重置</button>
+  </div>
+  <div id="modbusPane" class="toolpane" hidden>
+    <section class="card">
+      <div class="section-title">Modbus RTU · CRC-16/MODBUS</div>
+      <p class="smallnote">输入十六进制字节，可用空格、逗号或换行分隔。计算时输入不含 CRC 的 RTU 报文；验证时输入包含末尾 CRC 的完整报文。CRC 在线路中的顺序是低字节在前、高字节在后。</p>
+      <div class="field"><label for="rtuCalcInput">计算 CRC（不含 CRC 的报文）</label><textarea id="rtuCalcInput" class="hexarea" spellcheck="false" autocapitalize="characters" placeholder="例如：01 03 00 00 00 0A">01 03 00 00 00 0A</textarea><div class="actions"><button class="action" id="calcCrc">计算 CRC</button><button class="action secondary" id="useExample">填入示例</button></div></div>
+      <div id="crcResult" class="msg">点击“计算 CRC”查看结果。</div>
+      <div class="field"><label for="rtuCheckInput">验证完整 RTU 报文（末尾含 CRC）</label><textarea id="rtuCheckInput" class="hexarea" spellcheck="false" autocapitalize="characters" placeholder="例如：01 03 00 00 00 0A C5 CD"></textarea><div class="actions"><button class="action" id="checkCrc">验证 CRC</button><button class="action secondary" id="fillCalculated">把计算结果填入验证框</button></div></div>
+      <div id="checkResult" class="msg">输入完整报文后点击验证。</div>
+    </section>
+    <section class="card">
+      <div class="section-title">Modbus TCP · MBAP 报文解析</div>
+      <p class="smallnote">输入完整 Modbus TCP 十六进制报文。标准 Modbus TCP 报文不带 RTU CRC；工具会解析 MBAP 头、功能码和数据区，并检查协议标识、长度与字节数。</p>
+      <div class="field"><label for="tcpInput">TCP 报文（十六进制）</label><textarea id="tcpInput" class="hexarea" spellcheck="false" autocapitalize="characters" placeholder="例如：00 01 00 00 00 06 01 03 00 00 00 0A">00 01 00 00 00 06 01 03 00 00 00 0A</textarea><div class="actions"><button class="action" id="parseTcp">解析报文</button><button class="action secondary" id="tcpExample">填入示例</button></div></div>
+      <div id="tcpResult" class="msg">点击“解析报文”查看字段。</div>
+      <div class="smallnote">提示：如果你抓到的是 RTU-over-TCP 或网关透明传输的 RTU 字节流，它可能仍包含 RTU CRC；请根据网关的工作模式判断，不能把所有 TCP 数据都当作标准 Modbus TCP。</div>
+    </section>
+  </div>
+  <p class="footer">所有计算均在本机浏览器完成，输入内容不会上传。Modbus TCP 标准报文通常不使用 RTU CRC-16。</p>
+</main>
+<script>
+const digits='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const baseSel=document.querySelector('#base'), outSel=document.querySelector('#outBase'), valueEl=document.querySelector('#value'), statusEl=document.querySelector('#status'), prefixEl=document.querySelector('#prefix');
+for(let b=2;b<=36;b++){let a=document.createElement('option');a.value=b;a.textContent=`${b} 进制`;baseSel.append(a);let o=document.createElement('option');o.value=b;o.textContent=`${b} 进制`;outSel.append(o)}
+baseSel.value='16';outSel.value='10';
+function parse(s,b){s=s.trim().toUpperCase();let sign=1n;if(s[0]==='-'){sign=-1n;s=s.slice(1)}else if(s[0]==='+')s=s.slice(1);if(b===16&&s.startsWith('0X'))s=s.slice(2);if(b===2&&s.startsWith('0B'))s=s.slice(2);if(b===8&&s.startsWith('0O'))s=s.slice(2);if(!s)return {error:'请输入数值'};let n=0n;for(const c of s){const d=digits.indexOf(c);if(d<0||d>=b)return {error:`字符“${c}”不适用于 ${b} 进制`};n=n*BigInt(b)+BigInt(d)}return {value:n*sign}}
+function format(n,b){let neg=n<0n;if(neg)n=-n;let s=n.toString(b).toUpperCase();let p=prefixEl.checked?({2:'0b',8:'0o',16:'0x'}[b]||''):'';return (neg?'-':'')+p+s}
+function copyText(s,btn){if(!s||s==='—')return;const old=btn.textContent;const done=()=>{btn.textContent='已复制';setTimeout(()=>btn.textContent=old,1000)};if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(s).then(done).catch(()=>fallback(s,done))}else fallback(s,done)}
+function fallback(s,done){const t=document.createElement('textarea');t.value=s;document.body.append(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()}
+const common=[{label:'二进制',base:2},{label:'八进制',base:8},{label:'十进制',base:10},{label:'十六进制',base:16}];
+function render(){const b=Number(baseSel.value),p=parse(valueEl.value,b),results=document.querySelector('#results');document.querySelectorAll('#quick button').forEach(x=>x.classList.toggle('active',Number(x.dataset.base)===b));results.innerHTML='';if(p.error){statusEl.className='status err';statusEl.textContent='⚠ '+p.error;common.forEach(x=>{const d=document.createElement('div');d.className='result';d.innerHTML=`<div class="result-head">${x.label}（${x.base} 进制）</div><div class="result-value">—</div>`;results.append(d)});document.querySelector('#customValue').textContent='—';return}
+statusEl.className='status ok';statusEl.textContent='✓ 输入有效，已自动完成转换';common.forEach(x=>{const d=document.createElement('div');d.className='result';const head=document.createElement('div');head.className='result-head';head.innerHTML=`<span>${x.label}（${x.base} 进制）</span>`;const btn=document.createElement('button');btn.className='copy';btn.textContent='复制';const val=document.createElement('div');val.className='result-value';val.textContent=format(p.value,x.base);btn.onclick=()=>copyText(val.textContent,btn);head.append(btn);d.append(head,val);results.append(d)});
+const ob=Number(outSel.value);document.querySelector('#customLabel').textContent=`转换结果（${ob} 进制）`;document.querySelector('#customValue').textContent=format(p.value,ob)}
+valueEl.addEventListener('input',render);baseSel.addEventListener('change',render);outSel.addEventListener('change',render);prefixEl.addEventListener('change',render);document.querySelectorAll('#quick button').forEach(btn=>btn.addEventListener('click',()=>{baseSel.value=btn.dataset.base;render()}));document.querySelector('[data-copy="custom"]').addEventListener('click',e=>copyText(document.querySelector('#customValue').textContent,e.currentTarget));document.querySelector('#clear').addEventListener('click',()=>{valueEl.value='';baseSel.value='16';outSel.value='10';prefixEl.checked=false;render();valueEl.focus()});render();
+</script>
+
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);
+  document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-tab]').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));});
+    $('converterPane').hidden=btn.dataset.tab!=='converter';$('modbusPane').hidden=btn.dataset.tab!=='modbus';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+  function parseHex(text){
+    let s=text.trim(); if(!s) throw new Error('请输入十六进制报文。');
+    s=s.replace(/0x/gi,'').replace(/[\s,;:_-]+/g,'');
+    if(!/^[0-9a-f]+$/i.test(s)) throw new Error('发现非十六进制字符。请只输入 0–9、A–F，可用空格分隔字节。');
+    if(s.length%2) throw new Error('十六进制字符数量必须为偶数；每个字节需要两位。');
+    const a=[];for(let i=0;i<s.length;i+=2)a.push(parseInt(s.slice(i,i+2),16));return a;
+  }
+  const hexByte=n=>n.toString(16).toUpperCase().padStart(2,'0');
+  const hexBytes=a=>a.map(hexByte).join(' ');
+  function crc16Modbus(bytes){let crc=0xFFFF;for(const byte of bytes){crc^=byte;for(let i=0;i<8;i++)crc=(crc&1)?((crc>>>1)^0xA001):(crc>>>1);}return crc&0xFFFF;}
+  function show(el,text,type=''){el.className='msg'+(type?' '+type:'');el.textContent=text;}
+  function calc(){try{const a=parseHex($('rtuCalcInput').value);const crc=crc16Modbus(a),lo=crc&255,hi=(crc>>>8)&255;show($('crcResult'),`计算成功\nCRC 数值：0x${crc.toString(16).toUpperCase().padStart(4,'0')}\nCRC 低字节：${hexByte(lo)}\nCRC 高字节：${hexByte(hi)}\n追加到报文末尾：${hexByte(lo)} ${hexByte(hi)}\n完整 RTU 报文：${hexBytes([...a,lo,hi])}`,'ok');return {a,crc,lo,hi};}catch(e){show($('crcResult'),e.message,'err');return null;}}
+  $('calcCrc').addEventListener('click',calc);
+  $('useExample').addEventListener('click',()=>{$('rtuCalcInput').value='01 03 00 00 00 0A';calc();});
+  $('checkCrc').addEventListener('click',()=>{try{const a=parseHex($('rtuCheckInput').value);if(a.length<3)throw new Error('报文至少需要 1 个数据字节和 2 个 CRC 字节。');const body=a.slice(0,-2),gotLo=a[a.length-2],gotHi=a[a.length-1],got=(gotHi<<8)|gotLo,calcC=crc16Modbus(body);if(got===calcC)show($('checkResult'),`CRC 正确 ✓\n收到的 CRC 字节（低在前）：${hexByte(gotLo)} ${hexByte(gotHi)}\n计算 CRC：0x${calcC.toString(16).toUpperCase().padStart(4,'0')}\n报文长度：${a.length} 字节`,'ok');else show($('checkResult'),`CRC 错误 ✗\n收到的 CRC 字节（低在前）：${hexByte(gotLo)} ${hexByte(gotHi)}（数值 0x${got.toString(16).toUpperCase().padStart(4,'0')}）\n根据前面数据计算：0x${calcC.toString(16).toUpperCase().padStart(4,'0')}\n应追加的 CRC 字节：${hexByte(calcC&255)} ${hexByte((calcC>>>8)&255)}\n请检查报文内容、字节顺序或是否截帧。`,'err');}catch(e){show($('checkResult'),e.message,'err');}});
+  $('fillCalculated').addEventListener('click',()=>{const r=calc();if(r)$('rtuCheckInput').value=hexBytes([...r.a,r.lo,r.hi]);});
+  function parseTcp(){try{const a=parseHex($('tcpInput').value);if(a.length<7)throw new Error(`报文只有 ${a.length} 字节；MBAP 头至少需要 7 字节（含 Unit ID）。`);const trans=(a[0]<<8)|a[1],proto=(a[2]<<8)|a[3],len=(a[4]<<8)|a[5],unit=a[6],expected=6+len;const rows=[];const add=(k,v)=>rows.push(`${k}：${v}`);add('实际长度',`${a.length} 字节`);add('事务标识 Transaction ID',`0x${trans.toString(16).toUpperCase().padStart(4,'0')} (${trans})`);add('协议标识 Protocol ID',`0x${proto.toString(16).toUpperCase().padStart(4,'0')}${proto===0?'（标准 Modbus TCP）':'（非标准值，通常应为 0）'}`);add('长度 Length',`${len} 字节（Unit ID + PDU）`);add('按 Length 预期总长度',`${expected} 字节`);add('单元标识 Unit ID',`0x${hexByte(unit)} (${unit})`);if(a.length>=8){const fc=a[7];add('功能码 Function Code',`0x${hexByte(fc)}${(fc&0x80)?'（异常响应）':''}`);add('PDU / 数据区',a.length>7?hexBytes(a.slice(7)):'（无）');if(fc===1||fc===2)add('功能说明','读线圈 / 读离散输入');else if(fc===3)add('功能说明','读保持寄存器');else if(fc===4)add('功能说明','读输入寄存器');else if(fc===5)add('功能说明','写单个线圈');else if(fc===6)add('功能说明','写单个保持寄存器');else if(fc===15)add('功能说明','写多个线圈');else if(fc===16)add('功能说明','写多个保持寄存器');else if(fc&0x80)add('异常码',a.length>8?`0x${hexByte(a[8])}`:'报文中未找到异常码');}
+    const issues=[];if(proto!==0)issues.push('协议标识不是 0');if(len<2)issues.push('Length 小于标准最小值 2');if(a.length<expected)issues.push(`报文不完整：少 ${expected-a.length} 字节`);if(a.length>expected)issues.push(`比 Length 指定的报文多 ${a.length-expected} 字节（可能粘包或输入了多帧）`);const result=rows.join('\n');if(issues.length)show($('tcpResult'),result+'\n\n检查提示：'+issues.join('；'),'err');else show($('tcpResult'),result+'\n\n长度检查通过。标准 Modbus TCP 不附加 RTU CRC。','ok');
+    }catch(e){show($('tcpResult'),e.message,'err');}}
+  $('parseTcp').addEventListener('click',parseTcp);$('tcpExample').addEventListener('click',()=>{$('tcpInput').value='00 01 00 00 00 06 01 03 00 00 00 0A';parseTcp();});
+  calc();parseTcp();
+})();
+</script>
+
+</body>
+</html>
